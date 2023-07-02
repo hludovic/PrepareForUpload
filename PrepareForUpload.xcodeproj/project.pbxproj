@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		434E79BE2A50FA3A005753D6 /* CropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434E79BD2A50FA3A005753D6 /* CropView.swift */; };
 		43A4C2AD2A4E13F2001C4F49 /* PrepareForUploadApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A4C2AC2A4E13F2001C4F49 /* PrepareForUploadApp.swift */; };
 		43A4C2AF2A4E13F2001C4F49 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A4C2AE2A4E13F2001C4F49 /* ContentView.swift */; };
 		43A4C2B12A4E13F3001C4F49 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43A4C2B02A4E13F3001C4F49 /* Assets.xcassets */; };
@@ -14,6 +15,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		434E79BD2A50FA3A005753D6 /* CropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropView.swift; sourceTree = "<group>"; };
 		43A4C2A92A4E13F2001C4F49 /* PrepareForUpload.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PrepareForUpload.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		43A4C2AC2A4E13F2001C4F49 /* PrepareForUploadApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrepareForUploadApp.swift; sourceTree = "<group>"; };
 		43A4C2AE2A4E13F2001C4F49 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -53,6 +55,7 @@
 			children = (
 				43A4C2AC2A4E13F2001C4F49 /* PrepareForUploadApp.swift */,
 				43A4C2AE2A4E13F2001C4F49 /* ContentView.swift */,
+				434E79BD2A50FA3A005753D6 /* CropView.swift */,
 				43A4C2B02A4E13F3001C4F49 /* Assets.xcassets */,
 				43A4C2B22A4E13F3001C4F49 /* Preview Content */,
 			);
@@ -138,6 +141,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				43A4C2AF2A4E13F2001C4F49 /* ContentView.swift in Sources */,
+				434E79BE2A50FA3A005753D6 /* CropView.swift in Sources */,
 				43A4C2AD2A4E13F2001C4F49 /* PrepareForUploadApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
