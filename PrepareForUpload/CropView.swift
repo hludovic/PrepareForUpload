@@ -9,8 +9,15 @@ import SwiftUI
 
 struct CropView: View {
 
+    enum ImageValue {
+        static let ratio: CGFloat = 3/4
+        static let width: CGFloat = 350
+        static let height: CGFloat = width * ratio
+    }
+
+    @State private var dragOffset: CGSize = .zero
+    @State private var position: CGSize = .zero
     @State private var imageScale: CGFloat = 1
-    @State private var imageOffset: CGSize = .zero
 
     var body: some View {
         Image("placeholder")
@@ -18,7 +25,7 @@ struct CropView: View {
             .scaledToFit()
             .padding(1)
             .scaleEffect(imageScale)
-            .offset(x: imageOffset.width, y: imageOffset.height)
+            .offset(x: dragOffset.width + position.width, y: dragOffset.height + position.height)
             .overlay(
                 EmptyView()
                     .frame(width: 350, height: 250, alignment: .center)
@@ -31,26 +38,24 @@ struct CropView: View {
         // Double Tap Gesture
             .onTapGesture(count: 2) {
                 withAnimation(.spring()) {
-                    imageScale = 1
-                    imageOffset = .zero
+                    if imageScale > 1 {
+                        imageScale = 1
+                        position = .zero
+                    } else {
+                        position = .zero
+                    }
                 }
             }
 
         // Drag Gesture
-            .gesture(
-                DragGesture()
-                    .onChanged{ value in
-                        imageOffset = value.translation
-                    }
-                    .onEnded{ _ in
-                        withAnimation(.spring()) {
-
-                            if imageScale <= 1 {
-                                imageOffset = .zero
-
-                            }
-                        }
-                    }
+            .gesture(DragGesture()
+                .onChanged{ value in
+                    self.dragOffset = value.translation
+                }.onEnded{ value in
+                    self.position.width += value.translation.width
+                    self.position.height += value.translation.height
+                    self.dragOffset = .zero
+                }
             )
 
         // Magnification Gesture
