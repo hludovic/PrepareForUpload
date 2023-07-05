@@ -60,22 +60,21 @@ struct CropView: View {
                 MagnificationGesture()
                     .onChanged{ value in
                         withAnimation(.spring()) {
-                            if imageScale >= 1/2 && imageScale <= 3 {
+                            if imageScale >= 1 && imageScale <= 3 {
                                 imageScale = value
                             } else if imageScale > 3 {
                                 imageScale = 3
-                            } else if imageScale < 1/2 {
-                                imageScale = 1/2
+                            } else if imageScale < 1 {
+                                imageScale = 1
                             }
-                            self.fixPosition()
                         }
                     }
                     .onEnded{ value in
                         withAnimation(.spring()) {
                             if imageScale > 3 {
                                 imageScale = 3
-                            } else if imageScale < 1/2 {
-                                imageScale = 1/2
+                            } else if imageScale < 1 {
+                                imageScale = 1
                             }
                             self.fixPosition()
                         }
@@ -84,18 +83,20 @@ struct CropView: View {
     }
 
     private func fixPosition() {
+        let widthLimit = ((ImageValue.width * imageScale) - ImageValue.width) / 2
+        let heightLimit = ((ImageValue.height * imageScale) - ImageValue.height) / 2
         withAnimation(.spring()) {
-            if self.position.width > (ImageValue.width * imageScale) / 2 {
-                self.position.width = (ImageValue.width * imageScale) / 2
+            if self.position.width > widthLimit {
+                self.position.width = widthLimit
             }
-            if self.position.height > (ImageValue.height * imageScale) / 2 {
-                self.position.height = (ImageValue.height * imageScale) / 2
+            if self.position.height > heightLimit {
+                self.position.height = heightLimit
             }
-            if self.position.width < -(ImageValue.width * imageScale) / 2 {
-                self.position.width = -(ImageValue.width * imageScale) / 2
+            if self.position.width < -widthLimit {
+                self.position.width = -widthLimit
             }
-            if self.position.height < -(ImageValue.height * imageScale) / 2 {
-                self.position.height = -(ImageValue.height * imageScale) / 2
+            if self.position.height < -heightLimit {
+                self.position.height = -heightLimit
             }
         }
     }
