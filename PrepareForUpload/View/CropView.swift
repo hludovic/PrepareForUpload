@@ -8,23 +8,48 @@
 import SwiftUI
 
 struct CropView: View {
-    @StateObject var viewModel = CropViewModel()
+    @ObservedObject var viewModel: CropViewModel
 
     var body: some View {
-        ZStack {
-            Color.gray
-                .frame(width: CropViewModel.frameWidth, height: CropViewModel.frameHeight)
-                .opacity(0.5)
-            ImageToCrop(viewModel: viewModel)
-                .frame(width: CropViewModel.frameWidth, height: CropViewModel.frameHeight)
-                .clipped()
-                .border(.gray, width: 2)
+        NavigationView {
+            VStack {
+                Spacer()
+                ZStack {
+                    Color.secondary
+                        .frame(width: CropViewModel.frameWidth, height: CropViewModel.frameHeight)
+                        .opacity(0.2)
+                    ImageToCrop(viewModel: viewModel)
+                        .border(.primary, width: 1)
+                }
+                Spacer()
+                ZStack {
+                    Color.secondary
+                        .frame(maxWidth: .infinity, maxHeight: 60, alignment: .center)
+                        .opacity(0.2)
+                    HStack {
+                        Button {
+                            viewModel.reset()
+                        } label: {
+                            Label("Cancel", systemImage: "trash")
+                        }
+                        .padding()
+                        Spacer()
+                        Button {
+                            print("crop")
+                        } label: {
+                            Label("Crop", systemImage: "crop")
+                        }
+                        .padding()
+                    }
+                }
+            }
+            .navigationBarTitle("Crop the Photo", displayMode: .inline)
         }
     }
 }
 
 struct CropeView_Previews: PreviewProvider {
     static var previews: some View {
-        CropView()
+            CropView(viewModel: CropViewModel(photo: Image("placeholder")))
     }
 }

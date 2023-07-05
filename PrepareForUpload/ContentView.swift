@@ -9,8 +9,7 @@ import SwiftUI
 import PhotosUI
 
 struct ContentView: View {
-    @State private var selectedItem: PhotosPickerItem?
-    @State private var photo: Image?
+    @StateObject var viewModel = CropViewModel()
 
     var body: some View {
         VStack {
@@ -18,10 +17,12 @@ struct ContentView: View {
                 .imageScale(.large)
                 .foregroundColor(.accentColor)
             Text("Hello, world!")
-
-            PhotosPicker("Select a photo", selection: $selectedItem, matching: .images)
+            PhotosPicker("Select a photo", selection: $viewModel.selectedItem, matching: .images)
         }
-        .padding()
+        .sheet(isPresented: $viewModel.isPresentedCropView) {
+            CropView(viewModel: viewModel)
+        }
+
     }
 }
 

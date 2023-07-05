@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import SwiftUI
+import _PhotosUI_SwiftUI
 
 class CropViewModel: ObservableObject {
 
@@ -17,9 +19,39 @@ class CropViewModel: ObservableObject {
         CGSize(width: dragOffset.width + position.width, height: dragOffset.height + position.height)
     }
 
+    @Published var selectedItem: PhotosPickerItem? {
+        didSet { loadThePhoto() }
+    }
+    @Published var photo: Image?
     @Published var dragOffset: CGSize = .zero
     @Published var position: CGSize = .zero
     @Published var imageScale: CGFloat = 1
+    @Published var isPresentedCropView: Bool = false
+
+    init(photo: Image? = nil) {
+        if let photo { self.photo = photo }
+    }
+
+    func reset() {
+        photo = nil
+        dragOffset = .zero
+        position = .zero
+        imageScale = 1
+        selectedItem = nil
+        isPresentedCropView = false
+    }
+
+    func loadThePhoto() {
+        Task {
+            guard let data = try? await selectedItem?.loadTransferable(type: Data.self) else { return print("ERROR")}
+            guard let uiImage = UIImage(data: data) else { return print("ERROR") }
+            await MainActor.run {
+                photo = Image(uiImage: uiImage)
+                isPresentedCropView = true
+            }
+            return
+        }
+    }
 
     func fixPosition() {
         let widthLimit = ((Self.frameWidth * imageScale) - Self.frameWidth) / 2

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ImageToCrop: View {
     @ObservedObject var viewModel: CropViewModel
+    
     var body: some View {
         // MARK: - dragGesture property
         let dragGesture = DragGesture()
@@ -51,26 +52,28 @@ struct ImageToCrop: View {
             }
 
         // MARK: - Image property
-        Image("placeholder")
-            .resizable()
-            .scaledToFit()
-            .padding(1)
-            .scaleEffect(viewModel.imageScale)
-            .offset(viewModel.imageOffset)
-            .gesture(dragGesture)
-            .gesture(magnificationGesture)
-            .onTapGesture(count: 2) {
-                withAnimation(.spring()) {
-                    viewModel.imageScale = 1
-                    viewModel.position = .zero
+        if let photo = viewModel.photo {
+            photo
+                .resizable()
+                .scaledToFit()
+                .scaleEffect(viewModel.imageScale)
+                .offset(viewModel.imageOffset)
+                .gesture(dragGesture)
+                .gesture(magnificationGesture)
+                .onTapGesture(count: 2) {
+                    withAnimation(.spring()) {
+                        viewModel.imageScale = 1
+                        viewModel.position = .zero
+                    }
                 }
-            }
+                .frame(width: CropViewModel.frameWidth, height: CropViewModel.frameHeight)
+                .clipped()
+        }
     }
 }
 
 struct ImageToCrop_Previews: PreviewProvider {
     static var previews: some View {
-        ImageToCrop(viewModel: CropViewModel())
-
+        ImageToCrop(viewModel: CropViewModel(photo: Image("placeholder")))
     }
 }
