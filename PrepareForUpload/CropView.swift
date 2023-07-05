@@ -28,22 +28,17 @@ struct CropView: View {
             .offset(x: dragOffset.width + position.width, y: dragOffset.height + position.height)
             .overlay(
                 EmptyView()
-                    .frame(width: 350, height: 250, alignment: .center)
+                    .frame(width: ImageValue.width, height: ImageValue.height)
                     .border(.red, width: 1)
             )
-            .frame(width: 350, height: 250, alignment: .center)
+            .frame(width: ImageValue.width, height: ImageValue.height)
             .clipped()
-
 
         // Double Tap Gesture
             .onTapGesture(count: 2) {
                 withAnimation(.spring()) {
-                    if imageScale > 1 {
-                        imageScale = 1
-                        position = .zero
-                    } else {
-                        position = .zero
-                    }
+                    imageScale = 1
+                    position = .zero
                 }
             }
 
@@ -51,9 +46,11 @@ struct CropView: View {
             .gesture(DragGesture()
                 .onChanged{ value in
                     self.dragOffset = value.translation
+                    self.fixPosition()
                 }.onEnded{ value in
                     self.position.width += value.translation.width
                     self.position.height += value.translation.height
+                    self.fixPosition()
                     self.dragOffset = .zero
                 }
             )
@@ -70,6 +67,7 @@ struct CropView: View {
                             } else if imageScale < 1/2 {
                                 imageScale = 1/2
                             }
+                            self.fixPosition()
                         }
                     }
                     .onEnded{ value in
@@ -79,10 +77,30 @@ struct CropView: View {
                             } else if imageScale < 1/2 {
                                 imageScale = 1/2
                             }
+                            self.fixPosition()
                         }
                     }
             )
     }
+
+    private func fixPosition() {
+        withAnimation(.spring()) {
+            if self.position.width > (ImageValue.width * imageScale) / 2 {
+                self.position.width = (ImageValue.width * imageScale) / 2
+            }
+            if self.position.height > (ImageValue.height * imageScale) / 2 {
+                self.position.height = (ImageValue.height * imageScale) / 2
+            }
+            if self.position.width < -(ImageValue.width * imageScale) / 2 {
+                self.position.width = -(ImageValue.width * imageScale) / 2
+            }
+            if self.position.height < -(ImageValue.height * imageScale) / 2 {
+                self.position.height = -(ImageValue.height * imageScale) / 2
+            }
+        }
+    }
+
+
 }
 
 struct CropeView_Previews: PreviewProvider {
