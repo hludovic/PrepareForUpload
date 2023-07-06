@@ -31,8 +31,8 @@ struct ImageToCrop: View {
                                 }
                         }
                     }
-                    .frame(width: 350, height: 350, alignment: .center)
-                    .scaleEffect(viewModel.imageScale)
+                    .frame(width: CropViewModel.frameWidth, height: CropViewModel.frameheight, alignment: .center)
+                    .scaleEffect(viewModel.imageScale * viewModel.lastScale)
                     .offset(viewModel.imageOffset)
                     .clipped()
                 // MARK: - Drag Gesture
@@ -52,18 +52,12 @@ struct ImageToCrop: View {
                     .gesture(
                         MagnificationGesture()
                             .onChanged{ value in
-                                withAnimation(.spring()) {
                                     isInteracting = true
-                                    if viewModel.imageScale >= 1 && viewModel.imageScale <= 3 {
-                                        viewModel.imageScale = value
-                                    } else if viewModel.imageScale > 3 {
-                                        viewModel.imageScale = 3
-                                    } else if viewModel.imageScale < 1 {
-                                        viewModel.imageScale = 1
-                                    }
-                                }
+                                    viewModel.lastScale = value
                             }
                             .onEnded{ value in
+                                viewModel.imageScale *= value
+                                viewModel.lastScale = 1
                                 withAnimation(.spring()) {
                                     if viewModel.imageScale > 3 {
                                         viewModel.imageScale = 3
@@ -82,13 +76,11 @@ struct ImageToCrop: View {
                         }
                     }
             }
-
     }
 }
 
 struct ImageToCrop_Previews: PreviewProvider {
     static var previews: some View {
-        ImageToCrop(viewModel: CropViewModel(photo: Image("placeholder")))
-//            .border(.primary, width: 1)
+        ImageToCrop(viewModel: CropViewModel(photo: Image("previewImage")))
     }
 }

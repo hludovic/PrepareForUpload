@@ -10,7 +10,9 @@ import SwiftUI
 import _PhotosUI_SwiftUI
 
 class CropViewModel: ObservableObject {
-    static let frameDefaultWidth: CGFloat = 350
+    static let frameWidth: CGFloat = 350
+    static let frameheight: CGFloat = frameWidth * 3/4
+
     var imageOffset: CGSize {
         CGSize(width: dragOffset.width + position.width, height: dragOffset.height + position.height)
     }
@@ -23,6 +25,7 @@ class CropViewModel: ObservableObject {
     @Published var dragOffset: CGSize = .zero
     @Published var position: CGSize = .zero
     @Published var imageScale: CGFloat = 1
+    @Published var lastScale: CGFloat = 1
     @Published var isPresentedCropView: Bool = false
 
     init(photo: Image? = nil) {
@@ -50,8 +53,8 @@ class CropViewModel: ObservableObject {
     }
 
     func fixPosition(size: CGSize) {
-        let heightLimit = (((size.height * imageScale) - Self.frameDefaultWidth)/2)
-        let widthLimit = (((size.width  * imageScale) - Self.frameDefaultWidth)/2)
+        let heightLimit = (((size.height * imageScale) - Self.frameheight)/2)
+        let widthLimit = (((size.width  * imageScale) - Self.frameWidth)/2)
         if self.position.width > widthLimit {
             self.position.width = widthLimit
         }

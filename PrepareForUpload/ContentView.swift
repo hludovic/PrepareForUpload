@@ -21,7 +21,6 @@ struct ContentView: View {
         .sheet(isPresented: $viewModel.isPresentedCropView) {
             CropView(viewModel: viewModel)
         }
-
     }
 }
 

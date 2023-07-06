@@ -32,12 +32,12 @@ struct CropView: View {
                         Spacer()
                         Button {
                             let render = ImageRenderer(content: ImageToCrop(viewModel: viewModel))
-                            render.proposedSize = .init(CGSize(width: 350, height: 350))
+                            render.proposedSize = .init(CGSize(width: CropViewModel.frameWidth, height: CropViewModel.frameheight))
                             if let image = render.uiImage {
                                 viewModel.cropedImage = image
                                 viewModel.isPresentedCropView.toggle()
                             }
-                            print("crop")
+                            viewModel.reset()
                         } label: {
                             Label("Crop", systemImage: "crop")
                                 .foregroundColor(.white)
@@ -50,14 +50,12 @@ struct CropView: View {
             .navigationBarTitle("Crop the Photo", displayMode: .inline)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
-
-
         }
     }
 }
 
 struct CropeView_Previews: PreviewProvider {
     static var previews: some View {
-            CropView(viewModel: CropViewModel(photo: Image("placeholder")))
+            CropView(viewModel: CropViewModel(photo: Image("previewImage")))
     }
 }
