@@ -15,6 +15,7 @@ class CropViewModel: ObservableObject {
         CGSize(width: dragOffset.width + position.width, height: dragOffset.height + position.height)
     }
 
+    @Published var cropedImage: UIImage?
     @Published var selectedItem: PhotosPickerItem? {
         didSet { loadThePhoto() }
     }

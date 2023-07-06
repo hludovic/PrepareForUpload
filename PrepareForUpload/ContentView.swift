@@ -13,6 +13,9 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
+            if let crop = viewModel.cropedImage {
+                Image(uiImage: crop)
+            }
             PhotosPicker("Select a photo", selection: $viewModel.selectedItem, matching: .images)
         }
         .sheet(isPresented: $viewModel.isPresentedCropView) {

@@ -31,6 +31,12 @@ struct CropView: View {
                         .padding()
                         Spacer()
                         Button {
+                            let render = ImageRenderer(content: ImageToCrop(viewModel: viewModel))
+                            render.proposedSize = .init(CGSize(width: 350, height: 350))
+                            if let image = render.uiImage {
+                                viewModel.cropedImage = image
+                                viewModel.isPresentedCropView.toggle()
+                            }
                             print("crop")
                         } label: {
                             Label("Crop", systemImage: "crop")
