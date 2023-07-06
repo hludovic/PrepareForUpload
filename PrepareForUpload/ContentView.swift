@@ -13,10 +13,6 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
             PhotosPicker("Select a photo", selection: $viewModel.selectedItem, matching: .images)
         }
         .sheet(isPresented: $viewModel.isPresentedCropView) {

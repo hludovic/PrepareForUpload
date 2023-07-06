@@ -11,26 +11,22 @@ struct CropView: View {
     @ObservedObject var viewModel: CropViewModel
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 Spacer()
-                ZStack {
-                    Color.secondary
-                        .frame(width: CropViewModel.frameWidth, height: CropViewModel.frameHeight)
-                        .opacity(0.2)
-                    ImageToCrop(viewModel: viewModel)
-                        .border(.primary, width: 1)
-                }
+                ImageToCrop(viewModel: viewModel)
                 Spacer()
                 ZStack {
-                    Color.secondary
-                        .frame(maxWidth: .infinity, maxHeight: 60, alignment: .center)
-                        .opacity(0.2)
+                    Color.white
+                        .frame(maxWidth: .infinity, maxHeight: 60, alignment: .bottom)
+                        .opacity(0.1)
                     HStack {
                         Button {
                             viewModel.reset()
+                            viewModel.isPresentedCropView = false
                         } label: {
                             Label("Cancel", systemImage: "trash")
+                                .foregroundColor(.white)
                         }
                         .padding()
                         Spacer()
@@ -38,12 +34,18 @@ struct CropView: View {
                             print("crop")
                         } label: {
                             Label("Crop", systemImage: "crop")
+                                .foregroundColor(.white)
                         }
                         .padding()
                     }
                 }
             }
+            .background(.black)
             .navigationBarTitle("Crop the Photo", displayMode: .inline)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarColorScheme(.dark, for: .navigationBar)
+
+
         }
     }
 }

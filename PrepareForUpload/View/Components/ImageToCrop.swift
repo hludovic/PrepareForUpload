@@ -9,71 +9,86 @@ import SwiftUI
 
 struct ImageToCrop: View {
     @ObservedObject var viewModel: CropViewModel
+    @State var isInteracting: Bool = false
     
     var body: some View {
-        // MARK: - dragGesture property
-        let dragGesture = DragGesture()
-            .onChanged{ value in
-                viewModel.dragOffset = value.translation
-                withAnimation(.spring()) {
-                    viewModel.fixPosition()
-                }
-            }.onEnded{ value in
-                viewModel.position.width += value.translation.width
-                viewModel.position.height += value.translation.height
-                withAnimation(.spring()) {
-                    viewModel.fixPosition()
-                }
-                viewModel.dragOffset = .zero
+        ImageView()
+            .frame (maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    @ViewBuilder func ImageView() -> some View {
+            if let photo = viewModel.photo {
+                photo
+                    .resizable()
+                    .scaledToFill()
+                    .overlay {
+                        GeometryReader { geometry in
+                            Color.clear
+                                .onChange(of: isInteracting) { newValue in
+                                    withAnimation(.spring()) {
+                                        viewModel.fixPosition(size: geometry.size)
+                                    }
+                                }
+                        }
+                    }
+                    .frame(width: 350, height: 350, alignment: .center)
+                    .scaleEffect(viewModel.imageScale)
+                    .offset(viewModel.imageOffset)
+                    .clipped()
+                // MARK: - Drag Gesture
+                    .gesture(
+                        DragGesture()
+                            .onChanged{ value in
+                                isInteracting = true
+                                viewModel.dragOffset = value.translation
+                            }.onEnded{ value in
+                                viewModel.position.width += value.translation.width
+                                viewModel.position.height += value.translation.height
+                                viewModel.dragOffset = .zero
+                                isInteracting = false
+                            }
+                    )
+                // MARK: - Magnification Gesture
+                    .gesture(
+                        MagnificationGesture()
+                            .onChanged{ value in
+                                withAnimation(.spring()) {
+                                    isInteracting = true
+                                    if viewModel.imageScale >= 1 && viewModel.imageScale <= 3 {
+                                        viewModel.imageScale = value
+                                    } else if viewModel.imageScale > 3 {
+                                        viewModel.imageScale = 3
+                                    } else if viewModel.imageScale < 1 {
+                                        viewModel.imageScale = 1
+                                    }
+                                }
+                            }
+                            .onEnded{ value in
+                                withAnimation(.spring()) {
+                                    if viewModel.imageScale > 3 {
+                                        viewModel.imageScale = 3
+                                    } else if viewModel.imageScale < 1 {
+                                        viewModel.imageScale = 1
+                                    }
+                                }
+                                isInteracting = false
+                            }
+                    )
+                // MARK: - Double tap gesture
+                    .onTapGesture(count: 2) {
+                        withAnimation(.spring()) {
+                            viewModel.imageScale = 1
+                            viewModel.position = .zero
+                        }
+                    }
             }
 
-        // MARK: - magnificationGesture property
-        let magnificationGesture = MagnificationGesture()
-            .onChanged{ value in
-                withAnimation(.spring()) {
-                    if viewModel.imageScale >= 1 && viewModel.imageScale <= 3 {
-                        viewModel.imageScale = value
-                    } else if viewModel.imageScale > 3 {
-                        viewModel.imageScale = 3
-                    } else if viewModel.imageScale < 1 {
-                        viewModel.imageScale = 1
-                    }
-                }
-            }
-            .onEnded{ value in
-                withAnimation(.spring()) {
-                    if viewModel.imageScale > 3 {
-                        viewModel.imageScale = 3
-                    } else if viewModel.imageScale < 1 {
-                        viewModel.imageScale = 1
-                    }
-                    viewModel.fixPosition()
-                }
-            }
-
-        // MARK: - Image property
-        if let photo = viewModel.photo {
-            photo
-                .resizable()
-                .scaledToFit()
-                .scaleEffect(viewModel.imageScale)
-                .offset(viewModel.imageOffset)
-                .gesture(dragGesture)
-                .gesture(magnificationGesture)
-                .onTapGesture(count: 2) {
-                    withAnimation(.spring()) {
-                        viewModel.imageScale = 1
-                        viewModel.position = .zero
-                    }
-                }
-                .frame(width: CropViewModel.frameWidth, height: CropViewModel.frameHeight)
-                .clipped()
-        }
     }
 }
 
 struct ImageToCrop_Previews: PreviewProvider {
     static var previews: some View {
         ImageToCrop(viewModel: CropViewModel(photo: Image("placeholder")))
+//            .border(.primary, width: 1)
     }
 }
