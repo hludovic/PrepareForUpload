@@ -22,8 +22,7 @@ struct CropView: View {
                         .opacity(0.1)
                     HStack {
                         Button {
-                            viewModel.reset()
-                            viewModel.isPresentedCropView = false
+                            viewModel.pressCancelButton()
                         } label: {
                             Label("Cancel", systemImage: "trash")
                                 .foregroundColor(.white)
@@ -31,13 +30,7 @@ struct CropView: View {
                         .padding()
                         Spacer()
                         Button {
-                            let render = ImageRenderer(content: ImageToCrop(viewModel: viewModel))
-                            render.proposedSize = .init(CGSize(width: CropViewModel.frameWidth, height: CropViewModel.frameheight))
-                            if let image = render.uiImage {
-                                viewModel.cropedImage = image
-                                viewModel.isPresentedCropView.toggle()
-                            }
-                            viewModel.reset()
+                            viewModel.pressCropButton()
                         } label: {
                             Label("Crop", systemImage: "crop")
                                 .foregroundColor(.white)

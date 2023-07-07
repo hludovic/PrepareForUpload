@@ -13,7 +13,7 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
-            if let crop = viewModel.cropedImage {
+            if let crop = viewModel.cropedPhoto {
                 Image(uiImage: crop)
             }
             PhotosPicker("Select a photo", selection: $viewModel.selectedItem, matching: .images)

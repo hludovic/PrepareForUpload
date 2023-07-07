@@ -11,7 +11,7 @@ struct ImageToCrop: View {
     @ObservedObject var viewModel: CropViewModel
 
     var body: some View {
-        if let photo = viewModel.photo {
+        if let photo = viewModel.selectedPhoto {
             photo
                 .resizable()
                 .scaledToFill()

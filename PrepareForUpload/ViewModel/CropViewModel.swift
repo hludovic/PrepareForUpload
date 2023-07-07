@@ -17,11 +17,11 @@ class CropViewModel: ObservableObject {
         CGSize(width: dragOffset.width + position.width, height: dragOffset.height + position.height)
     }
 
-    @Published var cropedImage: UIImage?
     @Published var selectedItem: PhotosPickerItem? {
-        didSet { if selectedItem != nil { loadThePhoto() } }
+        didSet { if selectedItem != nil { loadCropedPhoto() } }
     }
-    @Published var photo: Image?
+    @Published var cropedPhoto: UIImage?
+    @Published var selectedPhoto: Image?
     @Published var dragOffset: CGSize = .zero
     @Published var position: CGSize = .zero
     @Published var imageScale: CGFloat = 1
@@ -30,30 +30,48 @@ class CropViewModel: ObservableObject {
     @Published var isInteracting: Bool = false
 
     init(photo: Image? = nil) {
-        if let photo { self.photo = photo }
+        if let photo { self.selectedPhoto = photo }
     }
 
-    func reset() {
-        photo = nil
-        dragOffset = .zero
-        position = .zero
-        imageScale = 1
+    func pressCancelButton() {
+        resetPhotoToCropParameters()
+        isPresentedCropView = false
     }
 
-    func loadThePhoto() {
+    func pressCropButton() {
         Task {
-            guard let selectedItem else { return print("Not Selected")}
-            guard let data = try? await selectedItem.loadTransferable(type: Data.self) else { return print("ERROR1")}
-            guard let uiImage = UIImage(data: data) else { return print("ERROR2") }
             await MainActor.run {
-                photo = Image(uiImage: uiImage)
-                isPresentedCropView = true
-                self.selectedItem = nil
+                let render = ImageRenderer(content: ImageToCrop(viewModel: self))
+                render.proposedSize = .init(CGSize(width: CropViewModel.frameWidth, height: CropViewModel.frameheight))
+                if let image = render.uiImage {
+                    cropedPhoto = image
+                    isPresentedCropView.toggle()
+                }
+                resetPhotoToCropParameters()
             }
-            return
         }
     }
 
+    func fixPosition(size: CGSize) {
+        let heightLimit = (((size.height * imageScale) - Self.frameheight)/2)
+        let widthLimit = (((size.width  * imageScale) - Self.frameWidth)/2)
+        if self.position.width > widthLimit {
+            self.position.width = widthLimit
+        }
+        if self.position.height > heightLimit {
+            self.position.height = heightLimit
+        }
+        if self.position.width < -widthLimit {
+            self.position.width = -widthLimit
+        }
+        if self.position.height < -heightLimit {
+            self.position.height = -heightLimit
+        }
+    }
+}
+
+extension CropViewModel {
+    // MARK: - Gestures Methods
     func tapGesture() {
         withAnimation(.spring()) {
             imageScale = 1
@@ -93,21 +111,28 @@ class CropViewModel: ObservableObject {
                 self.isInteracting = false
             }
     }
+}
 
-    func fixPosition(size: CGSize) {
-        let heightLimit = (((size.height * imageScale) - Self.frameheight)/2)
-        let widthLimit = (((size.width  * imageScale) - Self.frameWidth)/2)
-        if self.position.width > widthLimit {
-            self.position.width = widthLimit
-        }
-        if self.position.height > heightLimit {
-            self.position.height = heightLimit
-        }
-        if self.position.width < -widthLimit {
-            self.position.width = -widthLimit
-        }
-        if self.position.height < -heightLimit {
-            self.position.height = -heightLimit
+private extension CropViewModel {
+    // MARK: - Private Methods
+    func resetPhotoToCropParameters() {
+        selectedPhoto = nil
+        dragOffset = .zero
+        position = .zero
+        imageScale = 1
+    }
+
+    func loadCropedPhoto() {
+        Task {
+            guard let selectedItem else { return print("Not Selected")}
+            guard let data = try? await selectedItem.loadTransferable(type: Data.self) else { return print("ERROR1")}
+            guard let uiImage = UIImage(data: data) else { return print("ERROR2") }
+            await MainActor.run {
+                selectedPhoto = Image(uiImage: uiImage)
+                isPresentedCropView = true
+                self.selectedItem = nil
+            }
+            return
         }
     }
 }
