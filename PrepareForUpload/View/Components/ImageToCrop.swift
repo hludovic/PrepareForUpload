@@ -38,7 +38,14 @@ struct ImageToCrop: View {
 
 
 struct ImageToCrop_Previews: PreviewProvider {
+    static func previewVM() -> CropViewModel {
+        let vm = CropViewModel()
+        let photo = Image("previewImage")
+        vm.selectedPhoto = photo
+        return vm
+    }
+
     static var previews: some View {
-        ImageToCrop(viewModel: CropViewModel(photo: Image("previewImage")))
+        ImageToCrop(viewModel: previewVM())
     }
 }

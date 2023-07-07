@@ -28,10 +28,9 @@ class CropViewModel: ObservableObject {
     @Published var lastScale: CGFloat = 1
     @Published var isPresentedCropView: Bool = false
     @Published var isInteracting: Bool = false
-
-    init(photo: Image? = nil) {
-        if let photo { self.selectedPhoto = photo }
-    }
+    @Published var displayAlert: Bool = false
+    var alertMessage = ""
+    
 
     func pressCancelButton() {
         resetPhotoToCropParameters()
@@ -122,11 +121,26 @@ private extension CropViewModel {
         imageScale = 1
     }
 
+    func alertError(message: String) {
+        Task {
+            await MainActor.run {
+                alertMessage = message
+                displayAlert = true
+            }
+        }
+    }
+
     func loadCropedPhoto() {
         Task {
-            guard let selectedItem else { return print("Not Selected")}
-            guard let data = try? await selectedItem.loadTransferable(type: Data.self) else { return print("ERROR1")}
-            guard let uiImage = UIImage(data: data) else { return print("ERROR2") }
+            guard let selectedItem else {
+                return alertError(message: "No photo has been selected")
+            }
+            guard let data = try? await selectedItem.loadTransferable(type: Data.self) else {
+                return alertError(message: "Can't work with the selected photo")
+            }
+            guard let uiImage = UIImage(data: data) else {
+                return alertError(message: "Unable to load the selected photo")
+            }
             await MainActor.run {
                 selectedPhoto = Image(uiImage: uiImage)
                 isPresentedCropView = true

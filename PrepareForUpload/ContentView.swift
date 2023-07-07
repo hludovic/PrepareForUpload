@@ -21,6 +21,9 @@ struct ContentView: View {
         .sheet(isPresented: $viewModel.isPresentedCropView) {
             CropView(viewModel: viewModel)
         }
+        .alert(viewModel.alertMessage, isPresented: $viewModel.displayAlert) {
+            Button("OK ", role: .cancel) { }
+        }
     }
 }
 
