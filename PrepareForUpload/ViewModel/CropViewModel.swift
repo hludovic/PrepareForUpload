@@ -30,7 +30,6 @@ class CropViewModel: ObservableObject {
     @Published var isInteracting: Bool = false
     @Published var displayAlert: Bool = false
     var alertMessage = ""
-    
 
     func pressCancelButton() {
         resetPhotoToCropParameters()

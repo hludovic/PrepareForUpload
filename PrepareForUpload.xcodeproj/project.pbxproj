@@ -38,12 +38,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		434E79C52A552038005753D6 /* Components */ = {
+		430C86EB2A591DA6001B8FF3 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				434E79C32A551972005753D6 /* ImageToCrop.swift */,
+				43A4C2B02A4E13F3001C4F49 /* Assets.xcassets */,
+				43A4C2B22A4E13F3001C4F49 /* Preview Content */,
 			);
-			path = Components;
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		434E79C62A552111005753D6 /* ViewModel */ = {
@@ -58,7 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				434E79BD2A50FA3A005753D6 /* CropView.swift */,
-				434E79C52A552038005753D6 /* Components */,
+				434E79C32A551972005753D6 /* ImageToCrop.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -86,8 +87,7 @@
 				43A4C2AE2A4E13F2001C4F49 /* ContentView.swift */,
 				434E79C72A55214B005753D6 /* View */,
 				434E79C62A552111005753D6 /* ViewModel */,
-				43A4C2B02A4E13F3001C4F49 /* Assets.xcassets */,
-				43A4C2B22A4E13F3001C4F49 /* Preview Content */,
+				430C86EB2A591DA6001B8FF3 /* Resources */,
 			);
 			path = PrepareForUpload;
 			sourceTree = "<group>";
